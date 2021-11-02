@@ -1,0 +1,39 @@
+
+## Needed Python3 Packages:
+
+The Tektronix scripts require pyVISA to be installed.  You may also
+need to install pip so that pyVISA can be installed, and in general
+good to update all packages before installation:
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt -y install python3-pip
+
+sudo -H pip3 install --upgrade pip
+
+sudo -H pip3 install pyusb
+sudo -H pip3 install pyvisa
+sudo -H pip3 install pyvisa-py
+
+## Updating udev Rulees
+
+You may also need to add two rules files to /etc/udev/rules.d, then reload udev, then plug and unplug USB device (i.e. scope)
+for effect to take change. 
+
+sudo cp 50-myusb.rules /etc/udev/rules.d/
+sudo cp 70-usbtmc.rules /etc/udev/rules.d/
+
+sudo udevadm control --reload-rules && sudo udevadm trigger
+
+(manually unplug and plug scope back in)
+
+## For debugging, you can manually check what devices are detected:
+
+sudo python3
+
+Then:
+
+import visa
+resources = visa.ResourceManager('@py')
+resources.list_resources()
