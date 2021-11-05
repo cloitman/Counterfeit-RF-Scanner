@@ -1,0 +1,5 @@
+# This script requires OctoRest package from Python, you can install it using:
+
+pip install octorest
+
+# More information is online: https://github.com/dougbrion/OctoRest
