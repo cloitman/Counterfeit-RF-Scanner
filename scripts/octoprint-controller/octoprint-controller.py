@@ -4,11 +4,12 @@
 # Example code mostly from https://github.com/dougbrion/OctoRest
 #
 
+import json
 from octorest import OctoRest
 
-def make_client():
+def make_client(url, apikey):
     try:
-        client = OctoRest(url="http://172.29.34.38/", apikey="YouShallNotPass")
+        client = OctoRest(url=url, apikey=apikey)
         return client
     except Exception as e:
         print(e)
@@ -34,10 +35,20 @@ def get_printer_info():
     except Exception as e:
         print(e)
 
-def main():
+def main(url, apikey):
     c = make_client()
     for k in c.files()['files']:
         print(k['name'])
 
 if __name__ == "__main__":
-    main()
+
+    # Read url and apikey from settings.json file provided by user
+    with open("settings.json", "r") as read_file:
+        data = json.load(read_file)
+
+    url    = data['url']
+    apikey = data['apikey']
+
+    # Call main function
+    main(url, apikey)
+
