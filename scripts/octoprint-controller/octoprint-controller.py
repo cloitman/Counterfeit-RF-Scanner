@@ -19,9 +19,9 @@ def get_version():
     message = "You are using OctoPrint v" + client.version['server'] + "\n"
     return message
 
-def get_printer_info():
+def get_printer_info(url, apikey):
     try:
-        client = make_client()
+        client = make_client(url, apikey)
         # client = OctoRest(url="http://octopi.local", apikey="YouShallNotPass")
         message = ""
         message += str(client.version) + "\n"
@@ -49,6 +49,6 @@ if __name__ == "__main__":
     url    = data['url']
     apikey = data['apikey']
 
-    # Call main function
-    main(url, apikey)
+    # Get printer info
+    print( get_printer_info(url, apikey) )
 
