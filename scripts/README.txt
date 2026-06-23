@@ -6,6 +6,8 @@ the information such as url and apikey.  The settings.json should not
 be added to git due to sensitive nature of the apikey and it is being
 ignored by use of .gitignore file.
 
+# Example of finding base height csv
+$ ./run-experiment.py -j settings.json -h -o /home/pi/ed-rf-scanner/data/baseHeight.csv
 
 # Example of collect topography data
 
@@ -20,7 +22,7 @@ $ ./run-experiment.py -j settings.json -t -o /home/pi/3d-rf-scanner/data/topogra
 Below command will run experiment to collect RF data using in input (-i) file that specifies
 the topography and generating an output (-o) file where the RF data is saved:
 
-$ ./run-experiment.py -j settings.json -r -i /home/pi/3d-rf-scanner/data/topographydata.csv -o /home/pi/3d-rf-scanner/data/rfdata.csv
+$ ./run-experiment.py -j settings.json -r -i /home/pi/3d-rf-scanner/data/topographydata.csv -o /home/pi/3d-rf-scanner/data/rfdata.csv -b /home/pi/3d-rf-scanner/data/baseHeight.csv
 
 # Example of plotting data
 
@@ -28,6 +30,6 @@ Below command will generate a plot from input (-i) data and save it to the plot 
 the options --topography and --rf are used to specify what data is being provided, and thus
 what plot to generate:
 
-$ ./plot-data.py --topography -i /home/pi/3d-rf-scanner/data/topographydata.csv -p /home/pi/3d-rf-scanner/plots/topography.pdf
-$ ./plot-data.py --rf -i /home/pi/3d-rf-scanner/data/rfdata.csv -p /home/pi/3d-rf-scanner/plots/rf.pdf
+$ ./plot-data.py --topography -i /home/pi/3d-rf-scanner/data/topographydata.csv -p /home/pi/3d-rf-scanner/plots/topographyplot.png
+$ ./plot-data.py --rf -i /home/pi/3d-rf-scanner/data/rfdata.csv -p /home/pi/3d-rf-scanner/plots/rfplot.png
 
