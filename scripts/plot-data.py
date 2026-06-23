@@ -8,6 +8,20 @@ __license__ = "GPLv3"
 
 import argparse
 import sys
+import os
+# Get path of the script, so the other sripts can be located
+script_with_path = os.path.realpath(__file__)
+script_path = os.path.dirname(script_with_path)
+sys.path.append(os.path.join(script_path,'topography'))
+
+# Import custom scripts
+from surfaceplot import plot_topography
+
+script_path_2 = os.path.dirname(script_with_path)
+sys.path.append(os.path.join(script_path_2,'oscilloscope'))
+
+from rfplot import plot_rf
+
 
 # Main script
 if __name__ == "__main__":
@@ -27,13 +41,13 @@ if __name__ == "__main__":
 
     # If RF scanner option is selected, make RF plot
     if( args.rf == True ):
-        print('FIXME make rf plot here.')
-        # FIXME finis script
+        print('Make rf plot here.')
+        plot_rf(args.inputcsvfile,args.outputplotfile)
 
     # If topography scanner option is select, make topography plot
     elif( args.topography == True ):
-        print('FIXME make topography plot here.')
-        # FIXME finish script
+        print(' make topography plot here.')
+        plot_topography(args.inputcsvfile,args.outputplotfile)
 
     # Some unexpected set of options has occured
     else:

@@ -1,0 +1,11 @@
+Here is my code to plot the heatmap figure, like Figure 8 in 
+https://caslab.csl.yale.edu/publications/tian2020fingerprinting.pdf The 
+CSV file can be read with csv package in Python. I did not use Python 
+matplotlib to plot 3D graph, but you can try 
+https://www.geeksforgeeks.org/three-dimensional-plotting-in-python-using-matplotlib/
+
+> As a bonus, is there a way to "overlay" the heatmap on top of another "background" image?
+
+Yes, we can plot the figure over a picture. Here is an example: https://stackoverflow.com/questions/34458251/plot-over-an-image-background-in-python
+
+

@@ -19,6 +19,11 @@ sys.path.append(os.path.join(script_path,'topography'))
 
 # Import custom scripts
 from topography import scan_surface
+from baseHeight import baseHeight
+script_path_2 = os.path.dirname(script_with_path)
+sys.path.append(os.path.join(script_path_2,'oscilloscope'))
+
+from oscilloscope import scan_rf
 
 # Main script
 if __name__ == "__main__":
@@ -29,12 +34,13 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--topography", action='store_true', help='Run the scanner in topography mode')
     parser.add_argument('-o', '--outputcsvfile', default=None, type=str, required=False, help='File name with path of the output CSV file.')
     parser.add_argument('-i', '--inputcsvfile', default=None, type=str, required=False, help='File name with path of the input CSV file.')
-
+    parser.add_argument('-b', '--basecsvfile', default=None, type=str, required=False, help='File name with path of the base height csv')
+    parser.add_argument('-h', '--height', action='store_true','help='Run the scanner in base height measuring mode')
     args = parser.parse_args()
 
     # Check arguments
-    if( args.rf == False and args.topography == False ):
-        print('Please specify -r/--rf or -t/--topography option.')
+    if( args.rf == False and args.topography == False and args.height == False):
+        print('Please specify -r/--rf or -t/--topography or -h/--height option.')
         sys.exit(1)
 
     if( args.rf == True and args.topography == True ):
@@ -45,8 +51,8 @@ if __name__ == "__main__":
         print('Need to specify file name and path of the output CSV file.')
         sys.exit(1)
 
-    if( args.rf == True and ( args.outputcsvfile == None or args.inputcsvfile == None) ):
-        print('Need to specify file name and path of both the output and input CSV files.')
+    if( args.rf == True and ( args.outputcsvfile == None or args.inputcsvfile == None or args.basecsvfile==None) ):
+        print('Need to specify file name and path of the output, input, or baseheight CSV files.')
         sys.exit(1)
 
     # Read url and apikey from settings.json file provided by user
@@ -58,14 +64,17 @@ if __name__ == "__main__":
 
     # If RF scanner option is selected, call appropriate script
     if( args.rf == True ):
-        print('FIXME call rf scanner script')
-        # FIXME real function name to be specified
-        # scan_rf(url, apikey, args.inputcsvfile, args.outputcsvfile)
+        print('Calling rf scanner script')
+        scan_rf(url, apikey, args.inputcsvfile, args.outputcsvfile, args.basecsvfile)
 
     # If topography scanner option is select, call appropriate script 
     elif( args.topography == True ):
         print('Calling topography scanner script')
         scan_surface(url, apikey, args.outputcsvfile)
+
+    elif( args.height == True ):
+        print('Calling baseheight scanner script')
+        scan_surface(url,apikey,args.outputcsvfile)
 
     # Some unexpected set of options has occured
     else:
