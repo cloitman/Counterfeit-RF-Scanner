@@ -35,7 +35,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--outputcsvfile', default=None, type=str, required=False, help='File name with path of the output CSV file.')
     parser.add_argument('-i', '--inputcsvfile', default=None, type=str, required=False, help='File name with path of the input CSV file.')
     parser.add_argument('-b', '--basecsvfile', default=None, type=str, required=False, help='File name with path of the base height csv')
-    parser.add_argument('-h', '--height', action='store_true','help='Run the scanner in base height measuring mode')
+    parser.add_argument('-h', '--height', action='store_true',help='Run the scanner in base height measuring mode')
     args = parser.parse_args()
 
     # Check arguments
