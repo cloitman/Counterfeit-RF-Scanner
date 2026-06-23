@@ -23,6 +23,10 @@ def make_octorest_client(url, apikey):
         print(e)
         return
 
+#Remove scan outliers
+def reject_outliers(data,m=2):
+    return np.mean(data[abs(data-np.mean(data)) < m * np.std(data)])
+
 # Scan the surface and capture topography data
 def scan_surface(url, apikey, outputcsv):
 
@@ -47,63 +51,97 @@ def scan_surface(url, apikey, outputcsv):
     print('[scan_surface] Printer status is: ' + c.state())
 
     # Debugging
-    print('[scan_surface] Debugging, exiting.')
-    exit()
+    if (c.state()!='Operational'):
+        print('[scan_surface] Debugging, exiting.')
+        exit()
 
-    # FIXME add comment about what this code does
+    # Initialize printer
+
+    # We will be programming in milimeteres
     c.gcode("G21")
-    c.gcode("G90")
-    c.gcode("G0")
-    c.home()
-    c.gcode("G28 X0 Y0")
-    c.gcode("G28 Z0")
 
-    time.sleep(15.0)
-    
+    # Coding in absolute coordinates
+    c.gcode("G90")
+
+    # Positioning will be rapid
+    c.gcode("G0")
+
+    # Home the printer/move to origin
+    c.home()
+    #c.gcode("G01 X0 Y0")
+    #c.gcode("G01 Z0")
+    time.sleep(10.0)
+
+    #Define all array used to create topographic map and necessary values for looping
     z = np.array(0)
     xArr = []
-    yArr = [] 
+    yArr = []
     xOld = 0
     yOld = 0
     zArr = []
-    
-    # FIXME suggest to define x/y ranges here
-    # and then use them in the for loops
-    # all x,y coordinates and step is in mm?
-    x_min = 0
-    x_max = 0
-    x_step = 0
-    x_min = 0
-    x_max = 0
-    x_step = 0
 
-    # FIXME define distance scanner repetitions here
-    distance_rep = 12
+    # x/y ranges here to be used for coordinates looped over for scanning
+    # and then use them in the for loops
+    # all x,y coordinates and step is in mm/10 (10^-4 m)?
+    #range is x in [35,315] y in [30,3200] for Ender CR-10S
+    y_min = 200#30
+    y_max = 250#320
+    y_step = 1
+    x_min = 145#35
+    x_max = 195#315
+    x_step = 1
+
+    # Move to initial coordinate for scanning
+    initial_command = 'G01 X' +str(x_min) + ' Y' + str(y_min)
+    c.gcode(initial_command)
+    time.sleep(5.0)
+
+    # define distance scanner repetitions here
+    # 50 was found to be sufficient resolution
+    distance_rep = 50
 
     #range is x in [30,310] y in [0,160]
-    for i in range(60):
+    for i in range(y_min,y_max+1,y_step):
         #,310):
-        for j in range(30,160):
+        for j in range(x_min,x_max+1,x_step):
             #60):
-            # FIXME add comment about what this code does
-            xArr.append(j) # FIXME i think you mean i not j here?
-            yArr.append(j)
-            if (i%2==0):
-                c.jog(x=1)
-            else:
-                c.jog(x=-1)
-            sumHeight = 0
-            time.sleep(2.0)
+            #Now we add x, y, and z coordinates at each location of scan
+	    #y-axis is the i-coordinates. There are fewer of these coordinates
+	    #and it is easier for the motion of the printer to scan them first
+            yArr.append(i) #Add y-coordinate to array
 
-            # FIXME add comment about what this code does
+            sumHeight = 0
+
+            # Scan height at given location distance_rep times
+	    # to reduce measurement uncertainty
+	    # Count number of repetitions
             count = 0
+	    #Loop across measurments
             while (count < distance_rep):
-                sumHeight = sumHeight + vl53.range
-                time.sleep(1.0)
-                count = count + 1 
+		#Add new measurement to existing onces
+                measurement = vl53.range
+                sumHeight = sumHeight + measurement
+
+		#Sleep before measuring again
+                time.sleep(0.1)
+		#Add number of repetitions to count to act as break statement
+                count = count + 1
+            print(sumHeight/count)
+	    #Append z-height to coordinate array
             zArr.append(sumHeight/count)
-        
-        # FIXME add comment about what this code does
+            if (i%2==0):
+                if (j!=x_max):
+                    c.jog(x=1)
+                #Add x-coordinate to array
+                xArr.append(j)
+                print('(' + str(j) + ',' + str(i) + ')')
+            else:
+                xArr.append(x_max-(j-x_min)-1)
+                print('(' + str(x_max-(j-x_min)) + ',' + str(i) + ')')
+                if (j!=x_max):
+                    c.jog(x=-1)
+            time.sleep(0.25)
+        # Move y-axis one milimeter forward to scan new row
         c.jog(y=1)
 
     # Return print head to home position and save data
@@ -117,6 +155,6 @@ def scan_surface(url, apikey, outputcsv):
 if __name__ == "__main__":
     url = 'http://172.29.34.38'
     apikey = '5615E7330452468C899456B370E68DD4'
-    outputcsv = '/home/pi/3d-rf-scanner/data/topography.csv'
+    outputcsv = '/home/pi/3d-rf-scanner/data/topographydata.csv'
 
     scan_surface(url, apikey, outputcsv)

@@ -1,7 +1,0 @@
-## Needed Python3 Packages:
-
-The topography script requires OctoRest package for Python, OctoRest is
-the REST-ful interface to OctoPi which runs on RaspberryPi and is controlling
-the printer. More information is online: https://github.com/dougbrion/OctoRest
-
-sudo -H pip3 install octorest
