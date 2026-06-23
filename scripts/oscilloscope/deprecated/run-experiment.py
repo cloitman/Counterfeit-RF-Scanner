@@ -7,6 +7,8 @@ __copyright__ = "Copyright 2021"
 __license__ = "GPLv3"
 
 from octorest import OctoRest
+import os
+import json
 import time
 import board
 import busio
@@ -127,8 +129,11 @@ def scan_surface(url, apikey, inputcsv, outputcsv):
     return
 
 if __name__ == "__main__":
-    url = 'http://172.29.34.38'
-    apikey = '5615E7330452468C899456B370E68DD4'
+    _settings_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'settings.json')
+    with open(_settings_path) as _f:
+        _settings = json.load(_f)
+    url = _settings['url']
+    apikey = _settings['apikey']
     inputcsv = '/home/pi/3d-rf-scanner/data/topographydata.csv'
     outputcsv = '/home/pi/3d-rf-scanner/data/rfdata.csv'
     scan_surface(url, apikey, inputcsv, outputcsv)

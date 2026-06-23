@@ -1,7 +1,7 @@
 
 # Setting up OctoPi url and apikey settings file
 
-Please copy settings.json.template to settings.json and fill in
+Please copy settings.json.example to settings.json and fill in
 the information such as url and apikey.  The settings.json should not
 be added to git due to sensitive nature of the apikey and it is being
 ignored by use of .gitignore file.

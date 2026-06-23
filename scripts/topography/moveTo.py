@@ -7,6 +7,7 @@ __copyright__ = "Copyright 2021"
 __license__ = "GPLv3"
 
 from octorest import OctoRest
+import json
 
 #Connects to server
 #Connects to the printer, if there is error, exit
@@ -59,6 +60,9 @@ def moveTo(url,apikey):
 	return
 
 if __name__ == "__main__":
-	url = 'http://172.29.34.38'
-	apikey = '5615E7330452468C899456B370E68DD4'
+	_settings_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'settings.json')
+	with open(_settings_path) as _f:
+		_settings = json.load(_f)
+	url = _settings['url']
+	apikey = _settings['apikey']
 	moveTo()
